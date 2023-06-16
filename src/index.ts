@@ -23,7 +23,7 @@ app.use(
 app.use(bodyParser.json());
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Response");
+  res.send("test");
 });
 
 app.listen(config.PORT, () => {
