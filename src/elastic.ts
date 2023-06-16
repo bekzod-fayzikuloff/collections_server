@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { Client } from "@elastic/elasticsearch";
 import { config } from "./config";
 

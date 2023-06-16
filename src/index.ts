@@ -3,6 +3,7 @@ import { config } from "./config";
 import helmet from "helmet";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { elasticClient } from "./elastic";
 
 const app: Express = express();
 
@@ -23,6 +24,7 @@ app.use(
 app.use(bodyParser.json());
 
 app.get("/", (req: Request, res: Response) => {
+  elasticClient.ping().then((r) => console.log(`Connect elastic: ${r}`));
   res.send("test");
 });
 
