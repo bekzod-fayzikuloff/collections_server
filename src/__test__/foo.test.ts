@@ -1,5 +1,5 @@
 describe("foo test", () => {
   test("foo", () => {
-    expect("foo").toBe("foo");
+    expect("foo").toBe("foos");
   });
 });
