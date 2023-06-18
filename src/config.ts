@@ -9,4 +9,7 @@ export const config = {
   ELASTIC: {
     node: process.env.ELASTIC_NODE,
   },
+  S3: {
+    region: process.env.S3_REGION,
+  },
 };
