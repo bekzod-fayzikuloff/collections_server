@@ -6,15 +6,37 @@
     "requestBodies": {},
     "responses": {},
     "schemas": {
-      "UserCreateResponse": {
+      "UserCreateAccessToken": {
         "properties": {
-          "create": {
-            "type": "boolean"
+          "accessToken": {
+            "type": "string"
           }
         },
-        "required": ["create"],
+        "required": ["accessToken"],
+        "type": "object"
+      },
+      "Pick_UserCreateResponse.Exclude_keyofUserCreateResponse.id-or-isAdmin__": {
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["username", "email", "password"],
         "type": "object",
-        "additionalProperties": false
+        "description": "From T, pick a set of properties whose keys are in the union K"
+      },
+      "Omit_UserCreateResponse.id-or-isAdmin_": {
+        "$ref": "#/components/schemas/Pick_UserCreateResponse.Exclude_keyofUserCreateResponse.id-or-isAdmin__",
+        "description": "Construct a type with the properties of T except for those in type K."
+      },
+      "UserCreateRequest": {
+        "$ref": "#/components/schemas/Omit_UserCreateResponse.id-or-isAdmin_"
       }
     },
     "securitySchemes": {}
@@ -31,7 +53,7 @@
   },
   "openapi": "3.0.0",
   "paths": {
-    "/users": {
+    "/api/users": {
       "post": {
         "operationId": "Create",
         "responses": {
@@ -40,14 +62,25 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserCreateResponse"
+                  "$ref": "#/components/schemas/UserCreateAccessToken"
                 }
               }
             }
           }
         },
+        "tags": ["users"],
         "security": [],
-        "parameters": []
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreateRequest"
+              }
+            }
+          }
+        }
       },
       "get": {
         "operationId": "GetAll",
@@ -73,11 +106,12 @@
             }
           }
         },
+        "tags": ["users"],
         "security": [],
         "parameters": []
       }
     },
-    "/users/{userId}": {
+    "/api/users/{userId}": {
       "get": {
         "operationId": "GetOne",
         "responses": {
@@ -99,6 +133,7 @@
             }
           }
         },
+        "tags": ["users"],
         "security": [],
         "parameters": [
           {
@@ -133,6 +168,7 @@
             }
           }
         },
+        "tags": ["users"],
         "security": [],
         "parameters": [
           {
@@ -167,6 +203,7 @@
             }
           }
         },
+        "tags": ["users"],
         "security": [],
         "parameters": [
           {
