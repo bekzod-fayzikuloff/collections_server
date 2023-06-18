@@ -3,6 +3,7 @@ import helmet from "helmet";
 import cors from "cors";
 import { config } from "../config";
 import bodyParser from "body-parser";
+import morgan from "morgan";
 
 export const setupApp = (): Express => {
   const app: Express = express();
@@ -21,5 +22,7 @@ export const setupApp = (): Express => {
   );
 
   app.use(bodyParser.json());
+  app.use(morgan("tiny"));
+  app.use(express.static("public"));
   return app;
 };
