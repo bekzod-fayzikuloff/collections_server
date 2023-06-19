@@ -3,9 +3,10 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import { generateAccessToken } from "../utils/jwt";
-import { createInstance } from "../dto";
-import { UserCreateAccessToken, UserCreateRequest } from "../types/schemas/user.response";
+import { createInstance, getAll, getOne } from "../dto";
+import { UserCreateAccessToken, UserCreateRequest, UserDetail } from "../types/schemas/user.response";
 import { User } from "../models/users";
+import { NoContent } from "../types/schemas/base.response";
 
 @Route("api/users")
 @Tags("users")
@@ -17,29 +18,40 @@ export class userSchemaController extends Controller {
   }
 
   @Get()
-  public static async getAll() {
-    return [{ userId: 1 }];
+  public static async getAll(): Promise<UserDetail[]> {
+    return await getAll(User, {
+      attributes: { exclude: ["password"] },
+    });
   }
 
   @Get("{userId}")
-  public static async getOne(@Path() userId: number) {
-    return { userId: userId };
+  public static async getOne(@Path() userId: string): Promise<UserDetail> {
+    return await getOne(User, {
+      where: {
+        id: [userId],
+      },
+      attributes: {
+        exclude: ["password"],
+      },
+    });
   }
 
   @Patch("{userId}")
-  public static async update(@Path() userId: number) {
+  public static async update(@Path() userId: string) {
     return { userId: userId };
   }
 
   @Delete("{userId}")
-  public static async delete(@Path() userId: number) {
-    return { userId: userId };
+  public static async delete(@Path() userId: string): Promise<NoContent> {
+    const user = await getOne(User, { where: { id: userId } });
+    user && (await user.destroy());
+    return { delete: "success" };
   }
 }
 
 export const userController = {
   getAll: async (req: Request, res: Response) => {
-    await userSchemaController.getAll();
+    res.json(await userSchemaController.getAll());
   },
 
   create: async (req: Request, res: Response) => {
@@ -53,14 +65,19 @@ export const userController = {
   },
 
   getOne: async (req: Request, res: Response) => {
-    await userSchemaController.getOne(1);
+    const { userId } = req.params;
+    const user = await userSchemaController.getOne(userId);
+    if (!!user) {
+      res.json(user);
+    }
+    return res.status(StatusCodes.NOT_FOUND);
   },
 
   update: async (req: Request, res: Response) => {
-    await userSchemaController.update(1);
+    await userSchemaController.update("1");
   },
 
   delete: async (req: Request, res: Response) => {
-    await userSchemaController.delete(1);
+    res.status(StatusCodes.NO_CONTENT).json(await userSchemaController.delete(req.params.userId));
   },
 };
