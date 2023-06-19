@@ -65,7 +65,7 @@
             "type": "string"
           }
         },
-        "required": ["id", "isAdmin", "username", "email"],
+        "required": ["id", "username", "email"],
         "type": "object",
         "description": "From T, pick a set of properties whose keys are in the union K"
       },
@@ -108,6 +108,26 @@
         },
         "required": ["delete"],
         "type": "object"
+      },
+      "Pick_UserCreateResponse.Exclude_keyofUserCreateResponse.id-or-username-or-createdAt-or-updatedAt-or-isAdmin__": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "password"],
+        "type": "object",
+        "description": "From T, pick a set of properties whose keys are in the union K"
+      },
+      "Omit_UserCreateResponse.id-or-username-or-createdAt-or-updatedAt-or-isAdmin_": {
+        "$ref": "#/components/schemas/Pick_UserCreateResponse.Exclude_keyofUserCreateResponse.id-or-username-or-createdAt-or-updatedAt-or-isAdmin__",
+        "description": "Construct a type with the properties of T except for those in type K."
+      },
+      "UserLoginRequest": {
+        "$ref": "#/components/schemas/Omit_UserCreateResponse.id-or-username-or-createdAt-or-updatedAt-or-isAdmin_"
       }
     },
     "securitySchemes": {}
@@ -266,6 +286,36 @@
             }
           }
         ]
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetail"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["users"],
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginRequest"
+              }
+            }
+          }
+        }
       }
     }
   },

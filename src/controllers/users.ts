@@ -8,6 +8,7 @@ import {
   UserCreateAccessToken,
   UserCreateRequest,
   UserDetail,
+  UserLoginRequest,
   UserUpdateRequest,
 } from "../types/schemas/user.response";
 import { User } from "../models/users";
@@ -25,13 +26,21 @@ const getUserById = async (userId: string): Promise<any> => {
   });
 };
 
+const getUserByEmail = async (email: string): Promise<any> => {
+  return await getOne(User, {
+    where: {
+      email,
+    },
+  });
+};
+
 @Route("api/users")
 @Tags("users")
 export class userSchemaController extends Controller {
   @Post()
   public static async create(@Body() payload: UserCreateRequest): Promise<UserCreateAccessToken> {
     const user = await createInstance(User, payload);
-    return { accessToken: generateAccessToken({ userId: user.id, isBlocked: user.isAdmin }) };
+    return { accessToken: generateAccessToken({ userId: user.id, isAdmin: user.isAdmin }) };
   }
 
   @Get()
@@ -56,6 +65,11 @@ export class userSchemaController extends Controller {
     const user = await getUserById(userId);
     user && (await user.destroy());
     return { delete: "success" };
+  }
+
+  @Post("login")
+  public static async login(@Body() payload: UserLoginRequest): Promise<UserDetail> {
+    return await getUserByEmail(payload.email);
   }
 }
 
@@ -96,5 +110,20 @@ export const userController = {
 
   delete: async (req: Request, res: Response) => {
     res.status(StatusCodes.NO_CONTENT).json(await userSchemaController.delete(req.params.userId));
+  },
+
+  login: async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+    const user = await getUserByEmail(email);
+    if (!!user) {
+      if (await bcrypt.compare(password, user.password)) {
+        await user.save();
+        return res
+          .status(StatusCodes.OK)
+          .json({ accessToken: generateAccessToken({ userId: user.id, isAdmin: user.isAdmin }) });
+      }
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Check that your password is correct" });
+    }
+    res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
   },
 };

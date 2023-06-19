@@ -8,6 +8,7 @@ const router = Router();
 
 router.get("/", userController.getAll);
 router.post("/", userCreateValidate, [catchValidationResult, userController.create]);
+router.post("/login", [userController.login]);
 router.get("/:userId", [isValidUserUUID, userController.getOne]);
 router.patch("/:userId", [isValidUserUUID, userController.update]);
 router.delete("/:userId", [userController.delete]);
