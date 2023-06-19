@@ -38,59 +38,48 @@ const getUserByEmail = async (email: string): Promise<any> => {
 @Tags("users")
 export class userSchemaController extends Controller {
   @Post()
-  public static async create(@Body() payload: UserCreateRequest): Promise<UserCreateAccessToken> {
-    const user = await createInstance(User, payload);
-    return { accessToken: generateAccessToken({ userId: user.id, isAdmin: user.isAdmin }) };
-  }
+  public static async create(@Body() payload: UserCreateRequest): Promise<UserCreateAccessToken | void> {}
 
   @Get()
-  public static async getAll(): Promise<UserDetail[]> {
-    return await getAll(User, {
-      attributes: { exclude: ["password"] },
-    });
-  }
+  public static async getAll(): Promise<UserDetail[] | void> {}
 
   @Get("{userId}")
-  public static async getOne(@Path() userId: string): Promise<UserDetail> {
-    return await getUserById(userId);
-  }
+  public static async getOne(@Path() userId: string): Promise<UserDetail | void> {}
 
   @Patch("{userId}")
-  public static async update(@Path() userId: string, @Body() payload: UserUpdateRequest): Promise<UserDetail> {
-    return await getUserById(userId);
-  }
+  public static async update(@Path() userId: string, @Body() payload: UserUpdateRequest): Promise<UserDetail | void> {}
 
   @Delete("{userId}")
-  public static async delete(@Path() userId: string): Promise<NoContent> {
-    const user = await getUserById(userId);
-    user && (await user.destroy());
-    return { delete: "success" };
-  }
+  public static async delete(@Path() userId: string): Promise<NoContent | void> {}
 
   @Post("login")
-  public static async login(@Body() payload: UserLoginRequest): Promise<UserDetail> {
-    return await getUserByEmail(payload.email);
-  }
+  public static async login(@Body() payload: UserLoginRequest): Promise<UserDetail | void> {}
 }
 
 export const userController = {
   getAll: async (req: Request, res: Response) => {
-    res.json(await userSchemaController.getAll());
+    res.json(
+      await getAll(User, {
+        attributes: { exclude: ["password"] },
+      })
+    );
   },
 
   create: async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
-    const userToken = await userSchemaController.create({
+    const user = await createInstance(User, {
       username,
       email,
       password: await bcrypt.hash(password, bcrypt.genSaltSync(8)),
     });
+
+    const userToken = { accessToken: generateAccessToken({ userId: user.id, isAdmin: user.isAdmin }) };
     res.status(StatusCodes.CREATED).json(userToken);
   },
 
   getOne: async (req: Request, res: Response) => {
     const { userId } = req.params;
-    const user = await userSchemaController.getOne(userId);
+    const user = await getUserById(userId);
     if (user) {
       res.json(user);
     } else res.status(StatusCodes.NOT_FOUND).json({ detail: "User with this ID not found" });
@@ -109,7 +98,9 @@ export const userController = {
   },
 
   delete: async (req: Request, res: Response) => {
-    res.status(StatusCodes.NO_CONTENT).json(await userSchemaController.delete(req.params.userId));
+    const user = await getUserById(req.params.userId);
+    user && (await user.destroy());
+    res.status(StatusCodes.NO_CONTENT).json();
   },
 
   login: async (req: Request, res: Response) => {
@@ -117,7 +108,6 @@ export const userController = {
     const user = await getUserByEmail(email);
     if (!!user) {
       if (await bcrypt.compare(password, user.password)) {
-        await user.save();
         return res
           .status(StatusCodes.OK)
           .json({ accessToken: generateAccessToken({ userId: user.id, isAdmin: user.isAdmin }) });
