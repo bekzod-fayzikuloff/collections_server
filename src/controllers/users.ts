@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Patch, Delete, Route, Path, Body, Tags } from "tsoa";
+import { Controller, Post, Get, Patch, Delete, Route, Path, Body, Tags, Queries } from "tsoa";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
@@ -12,7 +12,7 @@ import {
   UserUpdateRequest,
 } from "../types/schemas/user.response";
 import { User } from "../models/users";
-import { NoContent } from "../types/schemas/base.response";
+import { NoContent, QueryParams } from "../types/schemas/base.response";
 import { usersEmailIsExist } from "../services/users";
 
 const getUserById = async (userId: string): Promise<any> => {
@@ -41,7 +41,7 @@ export class userSchemaController extends Controller {
   public static async create(@Body() payload: UserCreateRequest): Promise<UserCreateAccessToken | void> {}
 
   @Get()
-  public static async getAll(): Promise<UserDetail[] | void> {}
+  public static async getAll(@Queries() query?: QueryParams): Promise<UserDetail[] | void> {}
 
   @Get("{userId}")
   public static async getOne(@Path() userId: string): Promise<UserDetail | void> {}

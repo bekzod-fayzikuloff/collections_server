@@ -76,6 +76,23 @@
       "UserDetail": {
         "$ref": "#/components/schemas/Omit_UserCreateResponse.password_"
       },
+      "OrderE": {
+        "enum": ["desc", "asc"],
+        "type": "string"
+      },
+      "QueryParams": {
+        "properties": {
+          "sort": {
+            "$ref": "#/components/schemas/OrderE"
+          },
+          "page": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "type": "object",
+        "additionalProperties": false
+      },
       "Partial_Omit_UserCreateResponse.id-or-password__": {
         "properties": {
           "isAdmin": {
@@ -202,7 +219,25 @@
         },
         "tags": ["users"],
         "security": [],
-        "parameters": []
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/OrderE"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          }
+        ]
       }
     },
     "/api/users/{userId}": {
