@@ -76,6 +76,30 @@
       "UserDetail": {
         "$ref": "#/components/schemas/Omit_UserCreateResponse.password_"
       },
+      "Partial_Omit_UserCreateResponse.id-or-password__": {
+        "properties": {
+          "isAdmin": {
+            "type": "boolean"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "type": "object",
+        "description": "Make all properties in T optional"
+      },
+      "UserUpdateRequest": {
+        "$ref": "#/components/schemas/Partial_Omit_UserCreateResponse.id-or-password__"
+      },
       "NoContent": {
         "properties": {
           "delete": {
@@ -187,13 +211,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "properties": {
-                    "userId": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["userId"],
-                  "type": "object"
+                  "$ref": "#/components/schemas/UserDetail"
                 }
               }
             }
@@ -210,7 +228,17 @@
               "type": "string"
             }
           }
-        ]
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateRequest"
+              }
+            }
+          }
+        }
       },
       "delete": {
         "operationId": "Delete",

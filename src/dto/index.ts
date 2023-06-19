@@ -11,3 +11,11 @@ export const getAll = async (model: ModelCtor<any>, options?: FindOptions<any>):
 export const getOne = async (model: ModelCtor<any>, options?: FindOptions<any>): Promise<any> => {
   return await model.findOne(options);
 };
+
+export const updateInstance = async (instance: any, newValues: any) => {
+  Object.entries(newValues).forEach((property) => {
+    const [key, value] = property;
+    instance[key] = value;
+  });
+  instance.save();
+};

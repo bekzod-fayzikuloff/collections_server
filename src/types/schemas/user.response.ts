@@ -11,3 +11,4 @@ export interface UserCreateResponse {
 export type UserDetail = Omit<UserCreateResponse, "password">;
 export type UserCreateRequest = Omit<UserCreateResponse, "id" | "isAdmin">;
 export type UserCreateAccessToken = { accessToken: string };
+export type UserUpdateRequest = Partial<Omit<UserCreateResponse, "id" | "password">>;
