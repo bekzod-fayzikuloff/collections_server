@@ -15,7 +15,7 @@ import { User } from "../models/users";
 import { NoContent, QueryParams } from "../types/schemas/base.response";
 import { usersEmailIsExist } from "../services/users";
 
-const getUserById = async (userId: string): Promise<any> => {
+export const getUserById = async (userId: string): Promise<any> => {
   return await getOne(User, {
     where: {
       id: [userId],
