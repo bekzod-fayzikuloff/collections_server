@@ -11,6 +11,9 @@ export const config = {
     node: process.env.ELASTIC_NODE,
   },
   S3: {
-    region: process.env.S3_REGION,
+    region: process.env.S3_REGION as string,
+    accessKeyId: process.env.S3_ACCESS_KEY as string,
+    secretAccessKey: process.env.S3_SECRET_KEY as string,
+    bucket: process.env.S3_BUCKET as string,
   },
 };
