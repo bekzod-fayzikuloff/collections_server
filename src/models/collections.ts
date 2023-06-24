@@ -27,6 +27,19 @@ const Collection = sequelize.define<CollectionInstance>("collection", {
     field: "collectionImage",
     type: DataTypes.STRING,
   },
+
+  customFields: {
+    type: DataTypes.TEXT,
+    get: function () {
+      // @ts-ignore
+      return JSON.parse(this.getDataValue("customFields"));
+    },
+    set: function (value) {
+      // @ts-ignore
+      this.setDataValue("customFields", JSON.stringify(value));
+    },
+    defaultValue: "{}",
+  },
 });
 
 Collection.belongsTo(Subjects);

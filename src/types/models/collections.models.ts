@@ -7,6 +7,7 @@ export interface CollectionAttributes {
   subjectId?: number;
   userId?: number;
   image?: string;
+  customFields?: string;
 }
 
 export type CollectionCreatingAttributes = Optional<CollectionAttributes, "id" | "subjectId" | "image">;

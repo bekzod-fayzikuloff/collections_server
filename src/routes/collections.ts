@@ -1,9 +1,10 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
+import { collectionsController } from "../controllers/collections";
+import { authenticateToken } from "../middlewares/auth";
 
 const router = Router();
 
-router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-  res.json("good");
-});
+router.get("/", collectionsController.getAll);
+router.post("/", [authenticateToken, collectionsController.create]);
 
 export { router as collectionRouter };
