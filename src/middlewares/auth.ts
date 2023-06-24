@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 import { config } from "../config";
 import { getOne } from "../dto";
+import { User } from "../models/users";
 
 export const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"];
