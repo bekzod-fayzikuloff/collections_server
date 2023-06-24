@@ -11,6 +11,13 @@ export const collectionsController = {
     res.json(await getAll(Collection));
   },
 
+  getOne: async (req: Request, res: Response, next: NextFunction) => {
+    const collection = await getOne(Collection, { where: { id: req.params.id } });
+    if (collection) {
+      res.json(collection);
+    } else res.status(StatusCodes.NOT_FOUND).json({ detail: "Collection with this ID not found" });
+  },
+
   create: async (req: Request, res: Response, next: NextFunction) => {
     const file = req.files?.image;
     // @ts-ignore
