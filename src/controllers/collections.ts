@@ -5,10 +5,34 @@ import { StatusCodes } from "http-status-codes";
 import { Subjects } from "../models/subjects";
 import { getUserById } from "./users";
 import { sendImageToS3 } from "../s3";
+import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
+import { CollectionsCreateRequest, CollectionsCreateResponse } from "../types/schemas/collections.response";
 
 const getCollectionById = async (id: number) => {
   return await getOne(Collection, { where: { id } });
 };
+
+@Route("api/collections")
+@Tags("collections")
+export class CollectionSchemaController extends Controller {
+  @Post()
+  public static async create(@Body() payload: CollectionsCreateRequest): Promise<CollectionsCreateResponse | void> {}
+
+  @Get()
+  public static async getAll(): Promise<CollectionsCreateResponse[] | void> {}
+
+  @Get("{id}")
+  public static async getOne(@Path() id: number): Promise<CollectionsCreateResponse | void> {}
+
+  @Patch("{id}")
+  public static async update(
+    @Path() id: number,
+    @Body() payload: CollectionsCreateRequest
+  ): Promise<CollectionsCreateResponse | void> {}
+
+  @Delete("{id}")
+  public static async delete(@Path() id: number) {}
+}
 
 export const collectionsController = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {

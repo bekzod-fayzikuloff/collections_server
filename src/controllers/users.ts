@@ -36,7 +36,7 @@ const getUserByEmail = async (email: string): Promise<any> => {
 
 @Route("api/users")
 @Tags("users")
-export class userSchemaController extends Controller {
+export class UserSchemaController extends Controller {
   @Post()
   public static async create(@Body() payload: UserCreateRequest): Promise<UserCreateAccessToken | void> {}
 
