@@ -2,6 +2,30 @@ import { Request, Response, NextFunction } from "express";
 import { createInstance, getAll, getOne, updateInstance } from "../dto";
 import { Subjects } from "../models/subjects";
 import { StatusCodes } from "http-status-codes";
+import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
+import { SubjectCreateRequest, SubjectsCreateResponse } from "../types/schemas/subjects.response";
+
+@Route("api/subjects")
+@Tags("subjects")
+export class SubjectsSchemaController extends Controller {
+  @Post()
+  public static async create(@Body() payload: SubjectCreateRequest): Promise<SubjectsCreateResponse | void> {}
+
+  @Get()
+  public static async getAll(): Promise<SubjectsCreateResponse | void> {}
+
+  @Get("{id}")
+  public static async getOne(@Path() id: number): Promise<SubjectsCreateResponse | void> {}
+
+  @Patch("{id}")
+  public static async update(
+    @Path() id: number,
+    @Body() payload: SubjectCreateRequest
+  ): Promise<SubjectsCreateResponse | void> {}
+
+  @Delete("{id}")
+  public static async delete(@Path() id: number) {}
+}
 
 const getSubjectById = async (id: number) => {
   return await getOne(Subjects, { where: { id } });
