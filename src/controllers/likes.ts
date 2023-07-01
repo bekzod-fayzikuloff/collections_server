@@ -45,8 +45,8 @@ export const likesController = {
   },
 
   getOne: async (req: Request, res: Response) => {
-    const item = await getLikeById(+req.params.id);
-    item ? res.json(item) : res.status(StatusCodes.NOT_FOUND).json({});
+    const like = await getLikeById(+req.params.id);
+    like ? res.json(like) : res.status(StatusCodes.NOT_FOUND).json({});
   },
 
   delete: async (req: Request, res: Response) => {
