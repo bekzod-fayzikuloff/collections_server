@@ -4,9 +4,9 @@ import { createInstance, getAll, getOne, updateInstance } from "../dto";
 import { Item } from "../models/items";
 import { StatusCodes } from "http-status-codes";
 import { Like } from "../models/likes";
-import { ItemCreateRequest, ItemDetailResponse, ItemListResponse } from "../types/schemas/item.response";
+import { ItemCreateRequest, ItemDetailResponse, ItemListResponse } from "../types/schemas/items.response";
 
-const getItemById = async (id: number) => {
+export const getItemById = async (id: number) => {
   return await getOne(Item, {
     where: { id },
     include: [

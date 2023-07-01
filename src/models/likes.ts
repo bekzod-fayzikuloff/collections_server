@@ -1,5 +1,6 @@
 import { sequelize } from "../database/sequelize";
 import { DataTypes } from "sequelize";
+import { User } from "./users";
 
 export const Like = sequelize.define("like", {
   id: {
@@ -9,3 +10,5 @@ export const Like = sequelize.define("like", {
     primaryKey: true,
   },
 });
+
+Like.belongsTo(User);
