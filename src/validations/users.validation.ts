@@ -16,3 +16,11 @@ export const userCreateValidate = [
     .isLength({ min: 8 })
     .withMessage("password is required and must contain at least 8 characters "),
 ];
+
+export const userLoginValidate = [
+  body("email").isEmail().withMessage("email is required"),
+  body("password")
+    .notEmpty()
+    .isLength({ min: 8 })
+    .withMessage("password is required and must contain at least 8 characters "),
+];
