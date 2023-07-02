@@ -16,10 +16,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@aws-sdk/client-opensearch": "^3.363.0",
     "@aws-sdk/client-s3": "^3.354.0",
     "@aws-sdk/lib-storage": "^3.354.0",
     "@elastic/elasticsearch": "^8.8.1",
     "@elastic/transport": "^8.3.2",
+    "@opensearch-project/opensearch": "^1.2.0",
     "@types/cors": "^2.8.13",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
