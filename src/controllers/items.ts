@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
 import { createInstance, getAll, getOne, updateInstance } from "../dto";
-import { Item } from "../models/items";
+import { CustomField, Item } from "../models/items";
 import { StatusCodes } from "http-status-codes";
 import { Like } from "../models/likes";
 import { ItemCreateRequest, ItemDetailResponse, ItemListResponse } from "../types/schemas/items.response";
@@ -47,6 +47,13 @@ export const itemsController = {
   create: async (req: Request, res: Response) => {
     const { title, customFields } = req.body;
     const item = await createInstance(Item, { title, customFields });
+    customFields.map(async (cf: { type: string; value: string }) => {
+      try {
+        await createInstance(CustomField, { ...cf, itemId: item.id });
+      } catch (e) {
+        return res.status(StatusCodes.BAD_REQUEST).json(item);
+      }
+    });
     res.status(StatusCodes.CREATED).json(item);
   },
 

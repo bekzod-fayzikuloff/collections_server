@@ -5,6 +5,35 @@ import { Like } from "./likes";
 import { Comment } from "./comments";
 import { Collection } from "./collections";
 
+export const CustomField = sequelize.define("customField", {
+  id: {
+    field: "fieldId",
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+
+  type: {
+    field: "fieldType",
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+
+  value: {
+    type: DataTypes.TEXT,
+    get: function () {
+      console.log("Value", this.getDataValue("customFields"));
+      // @ts-ignore
+      return JSON.parse(this.getDataValue("value"));
+    },
+    set: function (value) {
+      // @ts-ignore
+      console.log("Value", value);
+      this.setDataValue("value", JSON.stringify(value));
+    },
+  },
+});
+
 export const Item = sequelize.define("item", {
   id: {
     field: "itemId",
@@ -18,22 +47,10 @@ export const Item = sequelize.define("item", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-
-  customFields: {
-    type: DataTypes.TEXT,
-    get: function () {
-      // @ts-ignore
-      return JSON.parse(this.getDataValue("customFields"));
-    },
-    set: function (value) {
-      // @ts-ignore
-      this.setDataValue("customFields", JSON.stringify(value));
-    },
-    defaultValue: "{}",
-  },
 });
 
 Item.hasMany(Tag);
 Item.hasMany(Like);
 Item.hasMany(Comment);
+Item.hasMany(CustomField);
 Item.belongsTo(Collection);
