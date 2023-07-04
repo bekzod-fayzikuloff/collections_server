@@ -5,6 +5,7 @@ import { CustomField, Item } from "../models/items";
 import { StatusCodes } from "http-status-codes";
 import { Like } from "../models/likes";
 import { ItemCreateRequest, ItemDetailResponse, ItemListResponse } from "../types/schemas/items.response";
+import { filterItems } from "../services/search";
 
 export const getItemById = async (id: number) => {
   return await getOne(Item, {
@@ -41,6 +42,9 @@ class ItemsSchemaController extends Controller {
 
 export const itemsController = {
   getAll: async (req: Request, res: Response) => {
+    if (req.query.q) {
+      return res.json(await filterItems(req.query.q as string));
+    }
     res.json(await getAll(Item, { include: [Like] }));
   },
 

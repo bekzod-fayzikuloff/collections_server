@@ -22,13 +22,11 @@ export const CustomField = sequelize.define("customField", {
   value: {
     type: DataTypes.TEXT,
     get: function () {
-      console.log("Value", this.getDataValue("customFields"));
       // @ts-ignore
       return JSON.parse(this.getDataValue("value"));
     },
     set: function (value) {
       // @ts-ignore
-      console.log("Value", value);
       this.setDataValue("value", JSON.stringify(value));
     },
   },
