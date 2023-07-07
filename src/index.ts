@@ -6,6 +6,12 @@ import { setupIndexes } from "./opensearch";
 
 const app = setupApp();
 
+app.all("/*", function (req, res, next) {
+  res.set("Access-Control-Expose-Headers", "X-Total-Count");
+  res.set("X-Total-Count", "30");
+  next();
+});
+
 app.use("/api", apiRouter);
 
 db.sequelize.sync({ force: false }).then(() => {

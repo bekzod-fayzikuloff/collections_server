@@ -11,6 +11,7 @@ router.post("/", userCreateValidate, [catchValidationResult, userController.crea
 router.post("/login", userLoginValidate, [catchValidationResult, userController.login]);
 router.get("/:userId", [isValidUserUUID, userController.getOne]);
 router.patch("/:userId", [isValidUserUUID, userController.update]);
+router.put("/:userId", [isValidUserUUID, userController.update]);
 router.delete("/:userId", [userController.delete]);
 
 export { router as userRouter };

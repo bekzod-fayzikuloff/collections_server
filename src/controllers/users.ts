@@ -58,11 +58,10 @@ export class UserSchemaController extends Controller {
 
 export const userController = {
   getAll: async (req: Request, res: Response) => {
-    res.json(
-      await getAll(User, {
-        attributes: { exclude: ["password"] },
-      })
-    );
+    const users = await getAll(User, {
+      attributes: { exclude: ["password"] },
+    });
+    res.json(users);
   },
 
   create: async (req: Request, res: Response) => {
@@ -87,9 +86,9 @@ export const userController = {
 
   update: async (req: Request, res: Response) => {
     const user = await getUserById(req.params.userId);
-    if (req?.body?.email && (await usersEmailIsExist(req?.body?.email))) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: "E-mail already in use" });
-    }
+    // if (req?.body?.email && (await usersEmailIsExist(req?.body?.email))) {
+    //   return res.status(StatusCodes.BAD_REQUEST).json({message: "E-mail already in use"});
+    // }
     await updateInstance(user, req.body);
     if (!!user) {
       res.json(user);
