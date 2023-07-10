@@ -93,10 +93,10 @@ export const collectionsController = {
     await updateInstance(collection, {
       title,
       description,
-      image,
       updatedAt,
       subjectId,
       userId,
+      image: await sendImageToS3(image.title, image.src),
       customFields: JSON.stringify(customFields),
     });
     return res.json(collection);

@@ -18,11 +18,12 @@ export const setupApp = (): Express => {
 
   app.use(
     bodyParser.urlencoded({
+      limit: "50mb",
       extended: true,
     })
   );
 
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: "50mb" }));
   app.use(morgan("tiny"));
   app.use(express.static("public"));
   app.use(fileUpload({}));
