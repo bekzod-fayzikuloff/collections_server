@@ -42,6 +42,7 @@ export const collectionsController = {
   getOne: async (req: Request, res: Response, next: NextFunction) => {
     const collection = await getCollectionById(+req.params.id);
     if (collection) {
+      collection.customFields = JSON.parse(collection.customFields);
       res.json(collection);
     } else res.status(StatusCodes.NOT_FOUND).json({ detail: "Collection with this ID not found" });
   },
@@ -57,9 +58,9 @@ export const collectionsController = {
       description,
       // @ts-ignore
       image: await sendImageToS3(fileName, file?.data),
-      customFields,
+      customFields: JSON.stringify(customFields),
     });
-    const subject = await getOne(Subjects, { where: { id: subjectId } });
+    const subject = subjectId ? await getOne(Subjects, { where: { id: subjectId } }) : null;
     const user = await getUserById(userId);
     if (!user) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "user have to existed" });
@@ -84,11 +85,20 @@ export const collectionsController = {
     if (!collection) {
       return res.status(StatusCodes.NOT_FOUND);
     }
+    const { title, description, image, updatedAt, subjectId, userId, customFields } = req.body;
     // @ts-ignore
     if (collection.userId !== req.user.id || !req.user.isAdmin) {
       return res.status(StatusCodes.FORBIDDEN).json();
     }
-    await updateInstance(collection, req.body);
+    await updateInstance(collection, {
+      title,
+      description,
+      image,
+      updatedAt,
+      subjectId,
+      userId,
+      customFields: JSON.stringify(customFields),
+    });
     return res.json(collection);
   },
 };
