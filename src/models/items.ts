@@ -19,6 +19,11 @@ export const CustomField = sequelize.define("customField", {
     allowNull: false,
   },
 
+  title: {
+    field: "fieldTitle",
+    type: DataTypes.STRING,
+  },
+
   value: {
     type: DataTypes.TEXT,
     get: function () {

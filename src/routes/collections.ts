@@ -7,8 +7,8 @@ const router = Router();
 router.get("/", collectionsController.getAll);
 router.post("/", [collectionsController.create]);
 router.get("/:id", collectionsController.getOne);
-router.delete("/:id", [authenticateToken, collectionsController.delete]);
+router.delete("/:id", [collectionsController.delete]);
 router.patch("/:id", [authenticateToken, collectionsController.update]);
-router.put("/:id", [authenticateToken, collectionsController.update]);
+router.put("/:id", [collectionsController.update]);
 
 export { router as collectionRouter };

@@ -7,6 +7,7 @@ router.get("/", commentsController.getAll);
 router.post("/", commentsController.create);
 router.get("/:id", commentsController.getOne);
 router.patch("/:id", commentsController.update);
+router.put("/:id", commentsController.update);
 router.delete("/:id", commentsController.delete);
 
 export { router as commentRouter };

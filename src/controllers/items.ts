@@ -49,8 +49,9 @@ export const itemsController = {
   },
 
   create: async (req: Request, res: Response) => {
-    const { title, customFields } = req.body;
-    const item = await createInstance(Item, { title, customFields });
+    let { title, customFields, collectionId } = req.body;
+    const item = await createInstance(Item, { title, collectionId });
+    customFields = customFields ? customFields : [];
     customFields.map(async (cf: { type: string; value: string }) => {
       try {
         await createInstance(CustomField, { ...cf, itemId: item.id });
@@ -70,6 +71,15 @@ export const itemsController = {
     const item = await getItemById(+req.params.id);
     if (!item) {
       return res.status(StatusCodes.NOT_FOUND).json({});
+    }
+    let customFields = req.body.customFields || [];
+    for (const cf of customFields) {
+      try {
+        const instance = await getOne(CustomField, { where: { id: cf.id } });
+        await updateInstance(instance, { ...cf });
+      } catch (e) {
+        res.status(StatusCodes.BAD_REQUEST).json(item);
+      }
     }
     await updateInstance(item, req.body);
     return res.json(item);

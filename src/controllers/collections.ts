@@ -4,7 +4,7 @@ import { Collection } from "../models/collections";
 import { StatusCodes } from "http-status-codes";
 import { Subjects } from "../models/subjects";
 import { getUserById } from "./users";
-import { sendImageToS3 } from "../s3";
+import { sendImageToS3BS64 } from "../s3";
 import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
 import { CollectionsCreateRequest, CollectionsCreateResponse } from "../types/schemas/collections.response";
 
@@ -48,16 +48,12 @@ export const collectionsController = {
   },
 
   create: async (req: Request, res: Response, next: NextFunction) => {
-    const file = req.files?.image;
-    // @ts-ignore
-    const fileName = req.files?.image?.name;
-
-    const { title, description, subjectId, userId, customFields } = req.body;
+    const { title, description, subjectId, userId, customFields, image } = req.body;
+    console.log(req.body);
     const collection = await createInstance(Collection, {
       title,
       description,
-      // @ts-ignore
-      image: await sendImageToS3(fileName, file?.data),
+      image: image ? await sendImageToS3BS64(image.title, image.src) : null,
       customFields: JSON.stringify(customFields),
     });
     const subject = subjectId ? await getOne(Subjects, { where: { id: subjectId } }) : null;
@@ -73,9 +69,9 @@ export const collectionsController = {
   delete: async (req: Request, res: Response, next: NextFunction) => {
     const collection = await getCollectionById(+req.params.id);
     // @ts-ignore
-    if ((collection && collection.userId !== req.user.id) || !req.user.isAdmin) {
-      return res.status(StatusCodes.FORBIDDEN).json();
-    }
+    // if ((collection && collection.userId !== req.user.id) || !req.user.isAdmin) {
+    //   return res.status(StatusCodes.FORBIDDEN).json();
+    // }
     collection && (await collection.destroy());
     res.status(StatusCodes.NO_CONTENT).json();
   },
@@ -87,16 +83,16 @@ export const collectionsController = {
     }
     const { title, description, image, updatedAt, subjectId, userId, customFields } = req.body;
     // @ts-ignore
-    if (collection.userId !== req.user.id || !req.user.isAdmin) {
-      return res.status(StatusCodes.FORBIDDEN).json();
-    }
+    // if (collection.userId !== req.user.id || !req.user.isAdmin) {
+    //   return res.status(StatusCodes.FORBIDDEN).json();
+    // }
     await updateInstance(collection, {
       title,
       description,
       updatedAt,
       subjectId,
       userId,
-      image: await sendImageToS3(image.title, image.src),
+      image: image ? await sendImageToS3BS64(image.title, image.src) : null,
       customFields: JSON.stringify(customFields),
     });
     return res.json(collection);
