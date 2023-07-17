@@ -13,7 +13,6 @@ import {
 } from "../types/schemas/user.response";
 import { User } from "../models/users";
 import { NoContent, QueryParams } from "../types/schemas/base.response";
-import { usersEmailIsExist } from "../services/users";
 
 export const getUserById = async (userId: string): Promise<any> => {
   return await getOne(User, {
@@ -71,7 +70,6 @@ export const userController = {
       email,
       password: await bcrypt.hash(password, bcrypt.genSaltSync(8)),
     });
-
     const userToken = { accessToken: generateAccessToken({ userId: user.id, isAdmin: user.isAdmin }) };
     res.status(StatusCodes.CREATED).json(userToken);
   },

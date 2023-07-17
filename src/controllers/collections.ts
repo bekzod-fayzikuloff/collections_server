@@ -7,6 +7,8 @@ import { getUserById } from "./users";
 import { sendImageToS3BS64 } from "../s3";
 import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
 import { CollectionsCreateRequest, CollectionsCreateResponse } from "../types/schemas/collections.response";
+import { CustomField, Item } from "../models/items";
+import { Tag } from "../models/tags";
 
 const getCollectionById = async (id: number) => {
   return await getOne(Collection, { where: { id } });
@@ -96,5 +98,22 @@ export const collectionsController = {
       customFields: JSON.stringify(customFields),
     });
     return res.json(collection);
+  },
+
+  getCollectionItems: async (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (isNaN(+id)) {
+      return res.status(StatusCodes.NOT_FOUND).json({});
+    }
+    const collection = await getCollectionById(+req.params.id);
+    if (!collection) {
+      return res.status(StatusCodes.NOT_FOUND).json({});
+    }
+    res.json(
+      await getAll(Item, {
+        where: { collectionId: req.params.id },
+        include: [CustomField, Tag, Collection],
+      })
+    );
   },
 };
