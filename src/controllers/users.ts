@@ -13,6 +13,7 @@ import {
 } from "../types/schemas/user.response";
 import { User } from "../models/users";
 import { NoContent, QueryParams } from "../types/schemas/base.response";
+import { Collection } from "../models/collections";
 
 export const getUserById = async (userId: string): Promise<any> => {
   return await getOne(User, {
@@ -112,5 +113,13 @@ export const userController = {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Check that your password is correct" });
     }
     res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+  },
+
+  getUserCollections: async (req: Request, res: Response) => {
+    res.json(
+      await getAll(Collection, {
+        where: { userId: [req.params.userId] },
+      })
+    );
   },
 };

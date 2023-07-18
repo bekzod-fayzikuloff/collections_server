@@ -10,6 +10,7 @@ router.get("/", userController.getAll);
 router.post("/", userCreateValidate, [catchValidationResult, userController.create]);
 router.post("/login", userLoginValidate, [catchValidationResult, userController.login]);
 router.get("/:userId", [isValidUserUUID, userController.getOne]);
+router.get("/:userId/collections", [isValidUserUUID, userController.getUserCollections]);
 router.patch("/:userId", [isValidUserUUID, userController.update]);
 router.put("/:userId", [isValidUserUUID, userController.update]);
 router.delete("/:userId", [userController.delete]);

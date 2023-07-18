@@ -14,7 +14,6 @@ app.all("/*", function (req, res, next) {
 
 app.use("/api", apiRouter);
 
-db.sequelize.drop().then();
 db.sequelize.sync({ force: false }).then(() => {
   // (async () => {
   //   await setupIndexes();
