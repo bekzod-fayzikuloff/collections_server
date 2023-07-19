@@ -14,11 +14,12 @@ app.all("/*", function (req, res, next) {
 
 app.use("/api", apiRouter);
 
-db.sequelize.sync({ force: false }).then(() => {
-  // (async () => {
-  //   await setupIndexes();
-  // })();
-  app.listen(config.PORT, () => {
-    console.log(`⚡️Server is running at http://localhost:${config.PORT}`);
-  });
+db.sequelize.drop().then();
+// db.sequelize.sync({ force: false }).then(() => {
+// (async () => {
+//   await setupIndexes();
+// })();
+app.listen(config.PORT, () => {
+  console.log(`⚡️Server is running at http://localhost:${config.PORT}`);
 });
+// });

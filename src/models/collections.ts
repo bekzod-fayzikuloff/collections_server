@@ -43,6 +43,6 @@ const Collection = sequelize.define<CollectionInstance>("collection", {
 });
 
 Collection.belongsTo(Subjects);
-Collection.belongsTo(User);
+Collection.belongsTo(User, { onDelete: "CASCADE" });
 
 export { Collection };

@@ -53,7 +53,7 @@ export const Item = sequelize.define("item", {
 });
 
 Item.hasMany(Tag);
-Item.hasMany(Like);
-Item.hasMany(Comment);
-Item.hasMany(CustomField);
-Item.belongsTo(Collection);
+Item.hasMany(Like, { onDelete: "CASCADE", hooks: true });
+Item.hasMany(Comment, { onDelete: "CASCADE", hooks: true });
+Item.hasMany(CustomField, { onDelete: "CASCADE", hooks: true });
+Item.belongsTo(Collection, { onDelete: "CASCADE" });
