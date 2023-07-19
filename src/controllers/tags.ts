@@ -2,6 +2,7 @@ import { Response, Request } from "express";
 import { createInstance, getAll, getOne } from "../dto";
 import { Tag } from "../models/tags";
 import { StatusCodes } from "http-status-codes";
+import { addItemRelation } from "../elastic";
 
 export const tagsController = {
   getAll: async (req: Request, res: Response) => {
@@ -9,8 +10,9 @@ export const tagsController = {
   },
 
   create: async (req: Request, res: Response) => {
-    const { title } = req.body;
-    const tag = await createInstance(Tag, { title });
+    const { title, itemId } = req.body;
+    const tag = await createInstance(Tag, { title, itemId });
+    addItemRelation(itemId, "tags", [tag]).then().catch();
     res.status(StatusCodes.CREATED).json(tag);
   },
 

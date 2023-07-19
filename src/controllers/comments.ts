@@ -6,6 +6,7 @@ import { StatusCodes } from "http-status-codes";
 import { getItemById } from "./items";
 import { getUserById } from "./users";
 import { CommentResponse, CommentRequest } from "../types/schemas/comments.response";
+import { addItemRelation } from "../elastic";
 
 export const getCommentById = async (id: number) => {
   return await getOne(Comment, { where: { id } });
@@ -43,6 +44,7 @@ export const commentsController = {
       return res.status(StatusCodes.BAD_REQUEST).json({});
     }
     const comment = await createInstance(Comment, { itemId, text });
+    addItemRelation(itemId, "comments", [comment]).then().catch();
     comment.setUser(user);
     res.status(StatusCodes.CREATED).json(comment);
   },

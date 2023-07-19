@@ -8,6 +8,9 @@ import { ItemCreateRequest, ItemDetailResponse, ItemListResponse } from "../type
 import { filterItems } from "../services/search";
 import { Collection } from "../models/collections";
 import { User } from "../models/users";
+import { deleteDocumentById, putNewDoc } from "../elastic";
+import { getCollectionById } from "./collections";
+import { ITEMS } from "../constants";
 
 export const getItemById = async (id: number) => {
   return await getOne(Item, {
@@ -75,6 +78,7 @@ export const itemsController = {
   create: async (req: Request, res: Response) => {
     let { title, customFields, collectionId } = req.body;
     const item = await createInstance(Item, { title, collectionId });
+    const collection = await getCollectionById(+collectionId);
     customFields = customFields ? customFields : [];
     customFields.map(async (cf: { type: string; value: string }) => {
       try {
@@ -82,6 +86,17 @@ export const itemsController = {
       } catch (e) {
         return res.status(StatusCodes.BAD_REQUEST).json(item);
       }
+    });
+
+    const itemJson = item.toJSON();
+
+    await putNewDoc(ITEMS, {
+      ...itemJson,
+      tags: [],
+      likes: [],
+      comments: [],
+      collection: collection.toJSON(),
+      customFields,
     });
     res.status(StatusCodes.CREATED).json(item);
   },
@@ -112,6 +127,13 @@ export const itemsController = {
   delete: async (req: Request, res: Response) => {
     const item = await getItemById(+req.params.id);
     item && (await item.destroy());
+    deleteDocumentById(ITEMS, req.params.id)
+      .then(() => {
+        console.log("delete");
+      })
+      .catch(() => {
+        console.log("Fail");
+      });
     res.status(StatusCodes.NO_CONTENT).json();
   },
 };

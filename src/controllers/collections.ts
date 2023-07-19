@@ -9,10 +9,9 @@ import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Tags } from "t
 import { CollectionsCreateRequest, CollectionsCreateResponse } from "../types/schemas/collections.response";
 import { CustomField, Item } from "../models/items";
 import { Tag } from "../models/tags";
-import { filterItems } from "../services/search";
 import { sequelize } from "../database/sequelize";
 
-const getCollectionById = async (id: number) => {
+export const getCollectionById = async (id: number) => {
   return await getOne(Collection, { where: { id } });
 };
 

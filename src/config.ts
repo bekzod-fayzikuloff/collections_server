@@ -7,10 +7,10 @@ export const config = {
   DB_LINK: process.env.DB_LINK,
   CORS_ORIGIN: process.env.CORS_ORIGIN,
   TOKEN_SECRET: process.env.TOKEN_SECRET,
-  OPEN_SEARCH: {
-    node: process.env.OPENSEARCH_NODE,
-    username: process.env.OPENSEARCH_USER as string,
-    password: process.env.OPENSEARCH_PASSWORD as string,
+  ELASTIC_SEARCH: {
+    cloudId: process.env.ELASTIC_CLOUD_ID,
+    username: process.env.ELASTIC_USER as string,
+    password: process.env.ELASTIC_PASSWORD as string,
   },
   S3: {
     region: process.env.S3_REGION as string,
