@@ -9,9 +9,32 @@ import { Body, Controller, Delete, Get, Patch, Path, Post, Route, Tags } from "t
 import { CollectionsCreateRequest, CollectionsCreateResponse } from "../types/schemas/collections.response";
 import { CustomField, Item } from "../models/items";
 import { Tag } from "../models/tags";
+import { filterItems } from "../services/search";
+import { sequelize } from "../database/sequelize";
 
 const getCollectionById = async (id: number) => {
   return await getOne(Collection, { where: { id } });
+};
+
+const biggestCollections = async (limit: number) => {
+  return await getAll(Item, {
+    attributes: [
+      "collection.collectionId",
+      [
+        sequelize.literal('(SELECT COUNT(*) FROM items WHERE "collection"."collectionId" = "items"."collectionId")'),
+        "itemsCount",
+      ],
+    ],
+    order: [["itemsCount", "DESC"]],
+    include: [
+      {
+        model: Collection,
+        attributes: ["title", "id", "image"],
+      },
+    ],
+    limit,
+    group: "collection.collectionId",
+  });
 };
 
 @Route("api/collections")
@@ -31,13 +54,15 @@ export class CollectionSchemaController extends Controller {
     @Path() id: number,
     @Body() payload: CollectionsCreateRequest
   ): Promise<CollectionsCreateResponse | void> {}
-
   @Delete("{id}")
   public static async delete(@Path() id: number) {}
 }
 
 export const collectionsController = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
+    if (req.query.biggest) {
+      return res.json(await biggestCollections(+req.query.biggest));
+    }
     res.json(await getAll(Collection));
   },
 
@@ -51,7 +76,6 @@ export const collectionsController = {
 
   create: async (req: Request, res: Response, next: NextFunction) => {
     const { title, description, subjectId, userId, customFields, image } = req.body;
-    console.log(req.body);
     const collection = await createInstance(Collection, {
       title,
       description,

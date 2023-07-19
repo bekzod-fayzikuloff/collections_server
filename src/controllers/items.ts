@@ -6,6 +6,8 @@ import { StatusCodes } from "http-status-codes";
 import { Like } from "../models/likes";
 import { ItemCreateRequest, ItemDetailResponse, ItemListResponse } from "../types/schemas/items.response";
 import { filterItems } from "../services/search";
+import { Collection } from "../models/collections";
+import { User } from "../models/users";
 
 export const getItemById = async (id: number) => {
   return await getOne(Item, {
@@ -13,6 +15,25 @@ export const getItemById = async (id: number) => {
     include: [
       {
         all: true,
+      },
+    ],
+  });
+};
+
+export const getLatestItems = async (limit: number) => {
+  return await getAll(Item, {
+    limit,
+    order: [["createdAt", "DESC"]],
+    include: [
+      {
+        model: Collection,
+        attributes: ["title"],
+        include: [
+          {
+            model: User,
+            attributes: ["id", "username"],
+          },
+        ],
       },
     ],
   });
@@ -44,6 +65,9 @@ export const itemsController = {
   getAll: async (req: Request, res: Response) => {
     if (req.query.q) {
       return res.json(await filterItems(req.query.q as string));
+    }
+    if (req.query.latest) {
+      return res.json(await getLatestItems(+req.query.latest));
     }
     res.json(await getAll(Item, { include: [Like] }));
   },
