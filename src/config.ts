@@ -13,6 +13,7 @@ export const config = {
     password: process.env.ELASTIC_PASSWORD as string,
   },
   S3: {
+    endpoint: process.env.S3_ENDPOINT as string,
     region: process.env.S3_REGION as string,
     accessKeyId: process.env.S3_ACCESS_KEY as string,
     secretAccessKey: process.env.S3_SECRET_KEY as string,

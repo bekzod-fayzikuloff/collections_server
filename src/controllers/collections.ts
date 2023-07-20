@@ -93,10 +93,6 @@ export const collectionsController = {
 
   delete: async (req: Request, res: Response, next: NextFunction) => {
     const collection = await getCollectionById(+req.params.id);
-    // @ts-ignore
-    // if ((collection && collection.userId !== req.user.id) || !req.user.isAdmin) {
-    //   return res.status(StatusCodes.FORBIDDEN).json();
-    // }
     collection && (await collection.destroy());
     res.status(StatusCodes.NO_CONTENT).json();
   },
@@ -107,10 +103,6 @@ export const collectionsController = {
       return res.status(StatusCodes.NOT_FOUND);
     }
     const { title, description, image, updatedAt, subjectId, userId, customFields } = req.body;
-    // @ts-ignore
-    // if (collection.userId !== req.user.id || !req.user.isAdmin) {
-    //   return res.status(StatusCodes.FORBIDDEN).json();
-    // }
     await updateInstance(collection, {
       title,
       description,
