@@ -117,7 +117,7 @@ export const itemsController = {
         const instance = await getOne(CustomField, { where: { id: cf.id } });
         await updateInstance(instance, { ...cf });
       } catch (e) {
-        res.status(StatusCodes.BAD_REQUEST).json(item);
+        return res.status(StatusCodes.BAD_REQUEST).json(item);
       }
     }
     await updateInstance(item, req.body);
