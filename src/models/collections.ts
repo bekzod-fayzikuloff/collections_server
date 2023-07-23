@@ -38,7 +38,7 @@ const Collection = sequelize.define<CollectionInstance>("collection", {
       // @ts-ignore
       this.setDataValue("customFields", JSON.stringify(value));
     },
-    defaultValue: "{}",
+    defaultValue: "[]",
   },
 });
 
