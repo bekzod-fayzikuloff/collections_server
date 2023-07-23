@@ -68,7 +68,9 @@ export const collectionsController = {
   getOne: async (req: Request, res: Response, next: NextFunction) => {
     const collection = await getCollectionById(+req.params.id);
     if (collection) {
-      collection.customFields = JSON.parse(collection.customFields);
+      if (typeof collection.customFields === "object" && collection.customFields !== null) {
+        collection.customFields = [];
+      } else collection.customFields = JSON.parse(collection.customFields);
       res.json(collection);
     } else res.status(StatusCodes.NOT_FOUND).json({ detail: "Collection with this ID not found" });
   },
