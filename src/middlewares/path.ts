@@ -6,5 +6,6 @@ export const isValidUserUUID = async (req: Request, res: Response, next: NextFun
   const { userId } = req.params;
   if (validate(userId)) {
     next();
-  } else return res.status(StatusCodes.NOT_FOUND).json({ detail: "Invalid user id" });
+  }
+  return res.status(StatusCodes.NOT_FOUND).json({ detail: "Invalid user id" });
 };

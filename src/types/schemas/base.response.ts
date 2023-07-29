@@ -2,11 +2,11 @@ export type NoContent = {
   delete: string;
 };
 
-enum OrderE {
+enum OrderType {
   Desc = "desc",
   Asc = "asc",
 }
 
 export interface QueryParams {
-  sort?: OrderE;
+  sort?: OrderType;
 }
